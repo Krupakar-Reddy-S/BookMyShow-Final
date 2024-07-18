@@ -6,6 +6,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const Booking = require("../models/bookingModel");
 const Show = require("../models/showModel");
 const EmailHelper = require("../utils/emailSender");
+const express = require("express");
 
 const endpointSecret = "whsec_774b9109545b45e18af845534afa4e7e0d144a1a57db46482ca7886c10cd5a5a";
 
@@ -15,7 +16,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), (request, res
   const sig = request.headers['stripe-signature'];
   let event;
 
-try {
+  try {
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
   } catch (err) {
     response.status(400).send(`Webhook Error: ${err.message}`);
@@ -32,10 +33,6 @@ try {
     default:
       console.log(`Unhandled event type ${event.type}`);
   }
-
-
-
-
 
   response.send();
 });
